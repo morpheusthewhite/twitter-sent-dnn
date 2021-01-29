@@ -24,21 +24,22 @@ def load_dcnn_model_params(path, param_str = None):
     if param_str is None:
         param_str = os.path.basename(path).split('.')[0]
     p = parse_param_string(param_str)
-    
-    stuff = load(open(path, "r"))
-    
-    for name, value in stuff:
-        if not hasattr(p, name):
-            setattr(p, name, value)
-        else:
-            # if appear multiple times,
-            # make it a list
-            setattr(p, name, [getattr(p, name), value])
+
+    with open(path, 'rb') as f:
+        stuff = load(f, encoding="latin1")
+
+        for name, value in stuff:
+            if not hasattr(p, name):
+                setattr(p, name, value)
+            else:
+                # if appear multiple times,
+                # make it a list
+                setattr(p, name, [getattr(p, name), value])
     return p
 
 def parse_param_string(s, desired_fields = {"ks", "fold", "conv_layer_n"}):
     """
-    
+
     >>> p = parse_param_string("twitter4,,filter_widths=8,6,,batch_size=10,,ks=20,8,,fold=1,1,,conv_layer_n=2,,ebd_dm=48,,l2_regs=1e-06,1e-06,1e-06,0.0001,,dr=0.5,0.5,,nkerns=7,12")
     >>> p.ks
     (20, 8)

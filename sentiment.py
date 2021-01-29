@@ -4,7 +4,11 @@ Sentiment prediction module
 import nltk
 import numpy as np
 
-from cPickle import load
+from pickle import load
+
+from param_util import load_dcnn_model_params
+from dcnn import DCNN
+
 
 def get_word_index_array(words, word2index):
     u"""
@@ -43,11 +47,9 @@ def pad_sents(sents, padding_token_index):
     return padded_sents
 
 
-WORD2INDEX = load(open("data/twitter.pkl"))[3]
+with open("data/twitter.pkl", 'rb') as twitter_file:
+    WORD2INDEX = load(twitter_file, encoding="latin1")[3]
 PADDING_INDEX = WORD2INDEX[u"<PADDING>"]
-
-from param_util import load_dcnn_model_params
-from dcnn import DCNN
 
 params = load_dcnn_model_params("models/filter_widths=8,6,,batch_size=10,,ks=20,8,,fold=1,1,,conv_layer_n=2,,ebd_dm=48,,l2_regs=1e-06,1e-06,1e-06,0.0001,,dr=0.5,0.5,,nkerns=7,12.pkl")
 
